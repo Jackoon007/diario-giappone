@@ -1,0 +1,793 @@
+<!doctype html><html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Diario Giappone</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#202023">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Giappone">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600;700&family=Patrick+Hand+SC&family=Unbounded:wght@800&display=swap">
+<style>
+/* Layout: una guida tascabile. Banda scura in alto, quattro stanze in basso su telefono,
+   doppia pagina da 960px: testo a sinistra, dati mappa e note a destra. */
+:root{
+  --page:#FBF8F2; --card:#FFFFFF; --band:#202023; --ink:#202023; --muted:#5C5C63;
+  --lead:#C21E5B; --display:#5A3E99; --link:#5A3E99; --rule:#5C5C63; --rule-soft:#D8D2C4;
+  --edge:#202023; --focus:#5A3E99; --id-bg:#202023; --on-id:#FFFFFF; --star:#C21E5B;
+  --visited:#2B6F69; --on-visited:#FFFFFF; --mark:#FBEA8A; --on-mark:#202023; --danger:#A9134D;
+  /* fissi in entrambi i temi */
+  --yellow:#F6D52B; --charcoal:#202023; --band-muted:#F1ECE1; --purple:#5A3E99; --purple-d:#432C80;
+  --pink:#C8155A; --pink-d:#A9134D; --teal:#2B6F69; --white:#FFFFFF;
+  --water:#A9D6EE; --land:#DAD6CE; --lavender:#DCD2F2; --pink-pale:#FFE3EE; --teal-pale:#CDEAE6;
+  --f-display:"Anton","Bebas Neue",Impact,"Arial Narrow",sans-serif;
+  --f-city:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --f-hand:"Patrick Hand SC","Segoe Print","Bradley Hand",cursive;
+  --stamp:4px 4px 0 0 var(--edge);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --page:#151517; --card:#2B2B30; --band:#0B0B0C; --ink:#FBF8F2; --muted:#A8A8AE;
+  --lead:#FF8AB0; --display:#F6D52B; --link:#F6D52B; --rule:#A8A8AE; --rule-soft:#5C5C63;
+  --edge:#0B0B0C; --focus:#F6D52B; --id-bg:#FBF8F2; --on-id:#202023; --star:#FF8AB0;
+  --visited:#4DA69C; --on-visited:#202023; --mark:#F6D52B; --on-mark:#202023; --danger:#FF8AB0;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --page:#151517; --card:#2B2B30; --band:#0B0B0C; --ink:#FBF8F2; --muted:#A8A8AE;
+  --lead:#FF8AB0; --display:#F6D52B; --link:#F6D52B; --rule:#A8A8AE; --rule-soft:#5C5C63;
+  --edge:#0B0B0C; --focus:#F6D52B; --id-bg:#FBF8F2; --on-id:#202023; --star:#FF8AB0;
+  --visited:#4DA69C; --on-visited:#202023; --mark:#F6D52B; --on-mark:#202023; --danger:#FF8AB0;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--page);color:var(--ink);font:400 15px/24px var(--f-mono);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:25;background:var(--band)}
+h1,h2,h3,p{margin:0}
+a{color:var(--link)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.band :focus-visible,.nav :focus-visible,.cover :focus-visible{outline-color:var(--yellow)}
+svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:square;stroke-linejoin:miter}
+svg.i.s{width:18px;height:18px}
+.num{font-variant-numeric:tabular-nums}
+
+/* banda titolo */
+.band{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--band);color:var(--yellow)}
+.band-in{max-width:1120px;margin:0 auto;min-height:64px;display:flex;align-items:center;gap:16px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.brand{font:400 28px/1 var(--f-display);letter-spacing:.01em;text-transform:uppercase;color:var(--yellow);text-decoration:none;
+  min-width:0;overflow-wrap:anywhere;padding-block:8px}
+.band-nav{display:none;gap:4px;margin-left:auto}
+.band-nav a{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;color:var(--band-muted);
+  text-decoration:none;font:600 12px/16px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;border-radius:4px}
+.band-nav a[aria-current="page"]{background:var(--yellow);color:var(--charcoal)}
+.edit-btn{margin-left:auto;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;background:transparent;
+  border:2px solid var(--yellow);border-radius:4px;color:var(--yellow);font:600 12px/16px var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.edit-btn[aria-pressed="true"]{background:var(--yellow);color:var(--charcoal)}
+
+/* barra in basso */
+.nav{position:fixed;inset:auto 0 0;z-index:20;background:var(--band);display:grid;grid-template-columns:repeat(4,1fr);
+  padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:60px;color:var(--band-muted);
+  text-decoration:none;font:600 12px/16px var(--f-mono);letter-spacing:.04em;text-transform:uppercase}
+.nav a[aria-current="page"]{color:var(--charcoal);background:var(--yellow)}
+
+main{max-width:1120px;margin:0 auto;padding-block:0 112px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:32px}
+.spread{display:grid;gap:32px;grid-template-columns:minmax(0,1fr)}
+.col{display:flex;flex-direction:column;gap:32px;min-width:0}
+@media (min-width:960px){
+  .nav{display:none}.band-nav{display:flex}.edit-btn{margin-left:8px}
+  main{padding-block:0 64px}
+  .spread{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+}
+
+/* copertina */
+.cover{margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px))) calc(-1 * max(16px,env(safe-area-inset-right,0px)));
+  background-color:var(--c-bg,var(--purple));color:var(--white);position:relative;overflow:hidden}
+.cover::after{content:"";position:absolute;inset:0 0 0 auto;width:38%;opacity:.55;pointer-events:none;
+  background:repeating-linear-gradient(135deg,var(--c-hatch,var(--purple-d)) 0 10px,transparent 10px 22px)}
+.cover-in{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px;padding-block:32px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.cover[data-c="rosa"]{--c-bg:var(--pink);--c-hatch:var(--pink-d);--c-soft:var(--pink-pale)}
+.cover[data-c="viola"]{--c-bg:var(--purple);--c-hatch:var(--purple-d);--c-soft:var(--lavender)}
+.cover[data-c="teal"]{--c-bg:var(--teal);--c-hatch:#1F524D;--c-soft:var(--teal-pale)}
+.cover[data-c="carbone"]{--c-bg:var(--charcoal);--c-hatch:#3A3A40;--c-soft:var(--band-muted)}
+.city{font:800 clamp(30px,9vw,56px)/1 var(--f-city);letter-spacing:-.02em;text-transform:uppercase;color:var(--yellow);overflow-wrap:anywhere}
+.cover .kicker{color:var(--c-soft,var(--lavender))}
+.cover-row{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.cover p.sub{font:500 17px/26px var(--f-mono);max-width:46ch}
+@media (min-width:1152px){.cover{margin-inline:0}.cover-in{padding-inline:32px}}
+
+.kicker,.label{font:600 12px/16px var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.label{color:var(--muted)}
+.data{font:500 14px/20px var(--f-mono);letter-spacing:.02em;text-transform:uppercase}
+.lead{font:500 17px/26px var(--f-mono);color:var(--lead);max-width:62ch}
+.body{max-width:62ch;white-space:pre-line}
+.small{font-size:13px;line-height:20px;color:var(--muted)}
+.display{font:400 28px/1.05 var(--f-display);letter-spacing:.01em;text-transform:uppercase;color:var(--display);text-wrap:balance}
+@media (min-width:960px){.display{font-size:40px;line-height:1}}
+
+/* sezione */
+.sec{display:flex;flex-direction:column;gap:16px;min-width:0}
+.sec-head{display:flex;align-items:center;gap:12px;background:var(--band);color:var(--yellow);min-height:44px;padding:0 4px 0 16px}
+.sec-head h2{font:700 18px/22px var(--f-mono);letter-spacing:.02em;text-transform:uppercase;flex:1;min-width:0;padding-block:11px}
+.sec-head .add{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;background:transparent;border:0;color:var(--yellow);
+  font:600 12px/16px var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.list{display:flex;flex-direction:column}
+.row{display:flex;gap:12px;align-items:flex-start;padding-block:12px;border-bottom:1px solid var(--rule-soft);min-width:0}
+.row:first-child{border-top:1px solid var(--rule-soft)}
+.row-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.row h3{font:700 15px/22px var(--f-mono);text-transform:uppercase;overflow-wrap:anywhere}
+.empty{border:2px dashed var(--rule);padding:16px;color:var(--muted);font-size:13px;line-height:20px}
+
+.tag{display:inline-flex;align-items:center;min-height:24px;padding:2px 8px;border-radius:2px;background:var(--yellow);color:var(--charcoal);
+  font:600 12px/16px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.tag.teal{background:var(--teal);color:var(--white)}
+.tag.line{background:transparent;color:var(--ink);border:1px solid var(--rule)}
+.idb{display:inline-grid;place-items:center;min-width:28px;height:28px;padding:0 6px;border-radius:999px;background:var(--id-bg);color:var(--on-id);
+  font:700 14px/14px var(--f-mono);flex:none}
+.stars{color:var(--star);font:700 16px/1 var(--f-mono);letter-spacing:4px;white-space:nowrap}
+
+/* pulsanti */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 14px;border:2px solid var(--edge);border-radius:4px;
+  background:var(--yellow);color:var(--charcoal);box-shadow:var(--stamp);font:600 12px/16px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.btn:hover{box-shadow:6px 6px 0 0 var(--edge)}
+.btn:active{transform:translate(4px,4px);box-shadow:none}
+.btn.sec2{background:var(--card);color:var(--ink);border-color:var(--rule);box-shadow:none}
+.btn.sec2:active{transform:none;background:var(--mark);color:var(--on-mark)}
+.btn.danger{background:var(--card);color:var(--danger);border-color:var(--danger);box-shadow:none}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.icon-btn{display:grid;place-items:center;width:44px;height:44px;flex:none;background:transparent;border:0;color:var(--muted);border-radius:4px}
+.icon-btn:hover{color:var(--ink)}
+.sec-head .icon-btn{color:var(--yellow)}
+body:not(.editing) .only-edit{display:none!important}
+
+/* indice dei giorni */
+.day-link{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--rule-soft);text-decoration:none;color:var(--ink);min-height:56px}
+.day-link:first-child{border-top:1px solid var(--rule-soft)}
+.day-link .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.day-link strong{font-weight:700;text-transform:uppercase;overflow-wrap:anywhere}
+.day-link.today strong{background:var(--mark);color:var(--on-mark);padding:0 4px;align-self:flex-start}
+
+.cards{display:grid;gap:24px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.icard{display:flex;flex-direction:column;background:var(--card);border:2px solid var(--edge);box-shadow:var(--stamp);text-decoration:none;color:var(--ink);min-width:0}
+.icard-head{display:flex;justify-content:space-between;gap:8px;background:var(--teal);color:var(--white);padding:8px 12px;font:600 12px/16px var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.icard-body{display:flex;flex-direction:column;gap:8px;padding:16px}
+.icard .cname{font:800 22px/1.1 var(--f-city);letter-spacing:-.02em;text-transform:uppercase;color:var(--display);overflow-wrap:anywhere}
+.icard:active{transform:translate(4px,4px);box-shadow:none}
+
+/* scaletta del giorno */
+.stop{display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;padding-block:16px;border-bottom:1px solid var(--rule-soft)}
+.stop:first-child{border-top:1px solid var(--rule-soft)}
+.stop-time{font:700 15px/22px var(--f-mono);font-variant-numeric:tabular-nums}
+.stop-main{display:flex;flex-direction:column;gap:8px;min-width:0}
+.stop-top{display:flex;gap:8px;align-items:flex-start}
+.stop-top h3{flex:1;min-width:0;font:700 17px/24px var(--f-mono);text-transform:uppercase;overflow-wrap:anywhere}
+.meta{display:flex;gap:8px;align-items:flex-start;font:500 14px/20px var(--f-mono)}
+.meta svg{margin-top:1px}
+.leave{display:flex;gap:8px;align-items:center;background:var(--mark);color:var(--on-mark);padding:6px 8px;font:600 13px/20px var(--f-mono);align-self:flex-start}
+.chk{display:grid;place-items:center;width:44px;height:44px;flex:none;margin:-10px -8px -10px 0;background:transparent;border:0;padding:0}
+.chk span{display:grid;place-items:center;width:28px;height:28px;border:2px solid var(--rule);border-radius:999px;color:transparent}
+.chk[aria-pressed="true"] span{background:var(--visited);border-color:var(--visited);color:var(--on-visited)}
+
+.callout{display:flex;flex-direction:column;gap:4px;border:2px solid var(--teal);padding:12px;background:var(--card)}
+.callout b{color:var(--lead);font-weight:700}
+.tiprow{display:flex;gap:4px;align-items:flex-start}
+.tiprow .callout{flex:1;min-width:0}
+
+.hotel{display:flex;flex-direction:column;gap:8px;background:var(--card);border:2px solid var(--edge);padding:16px}
+
+/* note */
+.pad{background-color:var(--card);background-image:radial-gradient(var(--rule-soft) 1.2px,transparent 1.3px);background-size:16px 16px;
+  border:1px solid var(--rule);display:flex;flex-direction:column}
+.pad textarea{background:transparent;border:0;resize:vertical;min-height:176px;padding:16px;font:400 20px/32px var(--f-hand);letter-spacing:.02em;width:100%}
+.pad textarea::placeholder{color:var(--muted);opacity:1}
+.saved{align-self:flex-end;padding:0 8px 4px;font-size:12px;line-height:16px;color:var(--muted);min-height:20px}
+
+/* mappa */
+.map{background:var(--land);border:2px solid var(--edge);border-radius:8px;overflow:hidden;position:relative}
+.map svg{display:block;width:100%;height:auto}
+.map text{font:700 13px var(--f-mono);fill:#202023;paint-order:stroke;stroke:#FBF8F2;stroke-width:4px;stroke-linejoin:round}
+.map .pin{cursor:pointer}
+.map .pin:focus-visible{outline:none}
+.map .pin:focus-visible circle.ring{stroke:#202023;stroke-width:5}
+.map-empty{padding:32px 16px;color:#202023;text-align:center;font-size:13px;line-height:20px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;line-height:16px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.legend i{display:inline-block;width:14px;height:14px;vertical-align:-2px;margin-right:6px;border-radius:999px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:thin}
+.chip{flex:none;min-height:44px;padding:0 14px;border:2px solid var(--rule);border-radius:999px;background:var(--card);color:var(--ink);
+  font:600 12px/16px var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.chip[aria-pressed="true"]{background:var(--yellow);border-color:var(--edge);color:var(--charcoal)}
+.sel{background:var(--card);border:2px solid var(--edge);box-shadow:var(--stamp);padding:16px;display:flex;flex-direction:column;gap:12px}
+.row.is-sel{background:var(--mark);color:var(--on-mark);padding-inline:8px}
+.row.is-sel .label,.row.is-sel .small{color:var(--on-mark)}
+.plain{background:transparent;border:0;padding:0;text-align:left;min-height:44px;display:flex;gap:12px;align-items:center;flex:1;min-width:0}
+
+.pager{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat b{font:400 40px/1 var(--f-display);color:var(--yellow)}
+.banner{background:var(--mark);color:var(--on-mark);padding:8px 12px;font-size:13px;line-height:20px;display:flex;gap:8px;align-items:flex-start}
+
+/* scheda di modifica */
+.scrim{position:fixed;inset:0;z-index:30;background:rgba(11,11,12,.6);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--page);color:var(--ink);width:100%;max-width:560px;max-height:92%;display:flex;flex-direction:column;border:2px solid var(--edge)}
+.sheet-head{display:flex;align-items:center;background:var(--band);color:var(--yellow);padding:0 4px 0 16px;min-height:56px}
+.sheet-head h2{flex:1;font:700 18px/22px var(--f-mono);letter-spacing:.02em;text-transform:uppercase}
+.sheet-head .icon-btn{color:var(--yellow)}
+.sheet form{display:flex;flex-direction:column;gap:16px;padding:16px;overflow-y:auto;
+  padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fld label{font:600 12px/16px var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.fld input,.fld select,.fld textarea{min-height:44px;padding:8px 12px;border:2px solid var(--rule);border-radius:4px;background:var(--card);font-size:16px;line-height:24px;width:100%;min-width:0}
+.fld textarea{min-height:96px;resize:vertical}
+.fld small{font-size:13px;line-height:20px;color:var(--muted)}
+.fld .err{color:var(--danger);font-weight:600}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.sheet-foot{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;padding-top:8px}
+@media (min-width:640px){.scrim{align-items:center}}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:40;background:var(--band);color:var(--yellow);
+  padding:10px 16px;font:600 12px/16px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--yellow);max-width:calc(100% - 32px)}
+.loading{padding-block:64px;color:var(--muted)}
+.sync-btn{margin-left:auto;position:relative;display:flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;padding:0 10px;background:transparent;
+  border:2px solid var(--band-muted);border-radius:4px;color:var(--band-muted);font:600 12px/16px var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.sync-btn .dot{width:10px;height:10px;border-radius:50%;background:#3FB27F;flex:none}
+.sync-btn[data-st="wait"] .dot{background:var(--yellow)}
+.sync-btn[data-st="err"] .dot,.sync-btn[data-st="local"] .dot{background:#E8590C}
+.sync-btn[data-st="busy"] .dot{background:var(--band-muted)}
+.edit-btn{margin-left:8px}
+@media (max-width:420px){.brand{font-size:22px}.sync-btn .lbl{display:none}}
+@media (min-width:960px){.sync-btn{margin-left:auto}.band-nav{margin-left:16px}}
+.sync-info{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.sync-info p{margin:0}
+
+</style>
+
+</head><body>
+<header class="band">
+  <div class="band-in">
+    <a class="brand" href="#sunto" id="brand">Diario Giappone</a>
+    <nav class="band-nav" id="topnav" aria-label="Sezioni"></nav>
+    <button class="sync-btn" id="syncBtn" type="button" data-act="sync-panel" aria-label="Sincronizzazione"><span class="dot"></span><span class="lbl">Sync</span></button>
+    <button class="edit-btn" id="editBtn" type="button" aria-pressed="false"></button>
+  </div>
+</header>
+<main id="app" tabindex="-1"><p class="loading">Apro la guida…</p></main>
+<nav class="nav" id="botnav" aria-label="Sezioni"></nav>
+<div id="sheetHost"></div>
+<div id="toastHost" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- utilità ---------- */
+var $ = function(s,r){return (r||document).querySelector(s)};
+var esc = function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var uid = function(){return Math.random().toString(36).slice(2,8)};
+var clone = function(o){return JSON.parse(JSON.stringify(o))};
+var DOW=['DOM','LUN','MAR','MER','GIO','VEN','SAB'], MON=['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC'];
+function pDate(s){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||'');return m?new Date(+m[1],+m[2]-1,+m[3]):null}
+function fDate(s,noDow){var d=pDate(s);if(!d)return '';return (noDow?'':DOW[d.getDay()]+' ')+d.getDate()+' '+MON[d.getMonth()]}
+function fDateY(s){var d=pDate(s);return d?fDate(s)+' '+d.getFullYear():''}
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function dayDiff(a,b){var x=pDate(a),y=pDate(b);return (x&&y)?Math.round((y-x)/864e5):null}
+function two(n){return ('0'+n).slice(-2)}
+function safeUrl(u){u=String(u||'').trim();if(!u)return '';if(/^https?:\/\//i.test(u))return u;if(/^[\w-]+(\.[\w-]+)+(\/|$)/.test(u))return 'https://'+u;return ''}
+function stars(n){n=+n||0;return n?'<span class="stars" role="img" aria-label="Priorità '+n+' su 3">'+'✱'.repeat(n)+'</span>':''}
+
+var ICONS={
+ sunto:'<path d="M4 4h7v16H4zM13 4h7v16h-7zM7 8h1M7 12h1M16 8h1M16 12h1"/>',
+ giorni:'<path d="M4 6h16v14H4zM4 10h16M8 3v5M16 3v5"/>',
+ mappa:'<path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.800-6 11-6 11z"/><path d="M12 8v4"/>',
+ promemoria:'<path d="M6 17V10a6 6 0 0 1 12 0v7M4 17h16M10 21h4"/>',
+ edit:'<path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ x:'<path d="M6 6l12 12M18 6L6 18"/>',
+ check:'<path d="M5 12l5 5 9-10"/>',
+ train:'<path d="M7 4h10v12H7zM7 11h10M9 20l2-4M15 20l-2-4M10 14h0M14 14h0"/>',
+ clock:'<path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 8v4l3 2"/>',
+ ticket:'<path d="M4 7h16v4a1 1 0 0 0 0 2v4H4v-4a1 1 0 0 0 0-2zM14 7v10"/>',
+ out:'<path d="M10 5H5v14h14v-5M14 4h6v6M20 4l-9 9"/>',
+ route:'<path d="M6 6h0M18 18h0M6 9v3a3 3 0 0 0 3 3h6a3 3 0 0 1 3 3"/><path d="M4 4h4v4H4zM16 16h4v4h-4z"/>',
+ cal:'<path d="M4 6h16v14H4zM4 10h16M8 3v5M16 3v5M12 13v4M10 15h4"/>',
+ bed:'<path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5M7 11h0"/>',
+ plane:'<path d="M3 13l18-7-7 15-3-6z"/>',
+ left:'<path d="M14 6l-6 6 6 6"/>', right:'<path d="M10 6l6 6-6 6"/>',
+ info:'<path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 11v5M12 8h0"/>'
+};
+function ic(n,small){return '<svg class="i'+(small?' s':'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[n]||'')+'</svg>'}
+
+/* ---------- stato e salvataggio ---------- */
+var LS='diario-giappone-v1';
+var S={trip:null,days:[],ready:false,db:null};
+var editing=false, mapDay='all', mapSel=null, pendingRender=false;
+try{editing=localStorage.getItem(LS+'-edit')==='1'}catch(e){}
+
+/* ---------- dati: copia locale + sincronizzazione con GitHub ---------- */
+var REPO='Jackoon007/diario-giappone', API='https://api.github.com/repos/'+REPO+'/contents/data.json';
+var SY={key:null,salt:'',rawKey:'',blob:null,locked:false,ops:[],token:'',who:'',last:0,busy:false,again:false,err:'',deferred:null,t:null};
+var SH={};
+function canon(v){if(Array.isArray(v))return '['+v.map(canon).join(',')+']';
+  if(v&&typeof v==='object')return '{'+Object.keys(v).sort().filter(function(k){return v[k]!==undefined}).map(function(k){return JSON.stringify(k)+':'+canon(v[k])}).join(',')+'}';
+  return JSON.stringify(v===undefined?null:v)}
+function ceq(a,b){return canon(a)===canon(b)}
+function isObj(x){return !!x&&typeof x==='object'&&!Array.isArray(x)}
+function idArr(x){return Array.isArray(x)&&x.every(function(e){return isObj(e)&&e.id!=null})}
+function idx(a){var o={};a.forEach(function(e){o[e.id]=e});return o}
+/* fusione a tre vie: b = com'era, m = mia versione, t = versione remota */
+function merge3(b,m,t){
+  if(ceq(m,b))return t; if(ceq(t,b)||ceq(m,t))return m;
+  if(isObj(m)&&isObj(t)){var bb=isObj(b)?b:{},o={},ks={};Object.keys(m).concat(Object.keys(t)).forEach(function(k){ks[k]=1});
+    Object.keys(ks).forEach(function(k){var r=merge3(bb[k],m[k],t[k]);if(r!==undefined)o[k]=r});return o}
+  if(idArr(m)&&idArr(t)&&(b==null||idArr(b))){var bm=idx(b||[]),tm=idx(t),mm=idx(m),out=[];
+    m.forEach(function(e){var id=e.id;if(tm[id]!==undefined){var r=merge3(bm[id],e,tm[id]);if(r!==undefined)out.push(r)}
+      else if(bm[id]!==undefined){if(!ceq(e,bm[id]))out.push(e)}else out.push(e)});
+    t.forEach(function(e){var id=e.id;if(mm[id]!==undefined)return;if(bm[id]!==undefined){if(!ceq(e,bm[id]))out.push(e)}else out.push(e)});
+    return out}
+  return m}
+function toMap(data){var m={trip:data&&data.trip?data.trip:null,days:{}};((data&&data.days)||[]).forEach(function(d){m.days[d.id]=d});return m}
+function fromMap(m){var days=Object.keys(m.days).map(function(id){var d=m.days[id];d.id=id;return d});
+  days.sort(function(a,b){return (a.date||'9999').localeCompare(b.date||'9999')||String(a.id).localeCompare(String(b.id))});return {trip:m.trip,days:days}}
+function applyOps(m,ops){ops.forEach(function(op){
+  if(op.p==='trip'){var tr=merge3(op.b,op.a,m.trip);m.trip=tr===undefined?null:tr;return}
+  var id=op.p.slice(4);if(op.a==null){delete m.days[id];return}
+  var r=merge3(op.b,op.a,m.days[id]);if(r===undefined)delete m.days[id];else{r=clone(r);r.id=id;m.days[id]=r}});return m}
+
+
+/* ---------- cifratura: AES-GCM con chiave da password (PBKDF2) ---------- */
+var ITER=310000;
+function bytesToB64(u){var bin='';for(var i=0;i<u.length;i+=0x8000)bin+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(bin)}
+function b64ToBytes(s){var bin=atob(s),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u}
+async function deriveKey(pw,saltB64,iter){var base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt:b64ToBytes(saltB64),iterations:iter||ITER,hash:'SHA-256'},base,{name:'AES-GCM',length:256},true,['encrypt','decrypt'])}
+async function useKey(key,salt){SY.key=key;SY.salt=salt;var raw=new Uint8Array(await crypto.subtle.exportKey('raw',key));SY.rawKey=bytesToB64(raw);
+  try{localStorage.setItem(LS+'-pw',JSON.stringify({k:SY.rawKey,s:salt}))}catch(e){}}
+async function loadKey(){try{var o=JSON.parse(localStorage.getItem(LS+'-pw')||'null');if(!o)return;
+  SY.key=await crypto.subtle.importKey('raw',b64ToBytes(o.k),{name:'AES-GCM'},true,['encrypt','decrypt']);SY.salt=o.s;SY.rawKey=o.k}catch(e){}}
+function isEnc(d){return d&&d.enc===1&&d.ct}
+async function openBlob(d){if(!isEnc(d))return d;
+  if(!SY.key||SY.salt!==d.salt){SY.blob=d;throw {code:'locked'}}
+  try{var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(d.iv)},SY.key,b64ToBytes(d.ct))}catch(e){SY.blob=d;throw {code:'locked'}}
+  return JSON.parse(new TextDecoder().decode(pt))}
+async function sealBlob(data){if(!SY.key)throw {code:'locked'};var iv=crypto.getRandomValues(new Uint8Array(12));
+  var ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},SY.key,new TextEncoder().encode(JSON.stringify(data))));
+  return {enc:1,kdf:'PBKDF2-SHA256',iter:ITER,salt:SY.salt,iv:bytesToB64(iv),ct:bytesToB64(ct)}}
+async function unlock(pw){var b=SY.blob;if(!b)throw {code:'net'};var k=await deriveKey(pw,b.salt,b.iter);
+  try{var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(b.iv)},k,b64ToBytes(b.ct))}catch(e){throw {code:'badpw'}}
+  await useKey(k,b.salt);SY.locked=false;SY.err='';setLocal(toMap(JSON.parse(new TextDecoder().decode(pt))));syncNow(false)}
+async function changePassword(pw){
+  if(!SY.token)throw {code:'auth'};if(!navigator.onLine)throw {code:'offline'};
+  var rem=await fetchRemote(),m=toMap(rem.data);applyOps(m,SY.ops);
+  var salt=bytesToB64(crypto.getRandomValues(new Uint8Array(16)));await useKey(await deriveKey(pw,salt,ITER),salt);
+  await putRemote(fromMap(m),rem.sha);SY.ops=[];setLocal(m);writeCache()}
+
+function readCache(){try{var c=JSON.parse(localStorage.getItem(LS)||'null');if(c&&typeof c==='object'){S.trip=c.trip||null;S.days=Array.isArray(c.days)?c.days:[];
+  SY.ops=Array.isArray(c.ops)?c.ops:[];SY.last=c.last||0}}catch(e){}
+  try{SY.token=localStorage.getItem(LS+'-key')||'';SY.who=localStorage.getItem(LS+'-who')||''}catch(e){}}
+function writeCache(){try{localStorage.setItem(LS,JSON.stringify({trip:S.trip,days:S.days,ops:SY.ops,last:SY.last}))}catch(e){}}
+function sortDays(){S.days.sort(function(a,b){return (a.date||'9999').localeCompare(b.date||'9999')||String(a.id).localeCompare(String(b.id))})}
+function snapAll(){SH={trip:S.trip?clone(S.trip):null};S.days.forEach(function(d){SH['day:'+d.id]=clone(d)})}
+function record(p,after){var a=after==null?null:clone(after);
+  var ex=SY.ops.find(function(o){return o.p===p});
+  if(ex)ex.a=a;else SY.ops.push({p:p,b:SH.hasOwnProperty(p)?SH[p]:null,a:a});
+  SH[p]=a;writeCache();paintSync();scheduleSync(1500)}
+function saveTrip(quiet){record('trip',S.trip);if(!quiet)render()}
+function saveDay(d,quiet){sortDays();record('day:'+d.id,d);if(!quiet)render()}
+function removeDay(id){S.days=S.days.filter(function(d){return d.id!==id});record('day:'+id,null)}
+function setLocal(m){if(sheet){SY.deferred=m;return}var o=fromMap(m);
+  S.trip=o.trip?normTrip(clone(o.trip)):null;S.days=o.days.map(function(d){return normDay(clone(d))});sortDays();snapAll();S.ready=true;writeCache();render()}
+
+function b64dec(s){var bin=atob(String(s).replace(/\s/g,'')),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new TextDecoder().decode(u)}
+function b64enc(str){var u=new TextEncoder().encode(str),bin='';for(var i=0;i<u.length;i+=0x8000)bin+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(bin)}
+function ghHeaders(){var h={'Accept':'application/vnd.github+json'};if(SY.token)h.Authorization='Bearer '+SY.token;return h}
+async function fetchRemote(){var r;
+  try{r=await fetch(API+'?ref=main&t='+Date.now(),{headers:ghHeaders(),cache:'no-store'})}catch(e){r=null}
+  if(r&&r.ok){var j=await r.json();return {sha:j.sha,data:await openBlob(JSON.parse(b64dec(j.content)))}}
+  if(r&&r.status===401)throw {code:'auth'};
+  if(SY.token&&r&&r.status===404)throw {code:'auth'};
+  /* senza chiave o con il limite di GitHub raggiunto: legge la copia pubblicata del sito */
+  var p=await fetch('data.json?t='+Date.now(),{cache:'no-store'});if(!p.ok)throw {code:'net'};
+  return {sha:'',data:await openBlob(await p.json())}}
+async function putRemote(data,sha){
+  var r=await fetch(API,{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},ghHeaders()),
+    body:JSON.stringify({message:'Modifiche dal telefono'+(SY.who?' di '+SY.who:''),content:b64enc(JSON.stringify(await sealBlob(data))+'\n'),sha:sha,branch:'main'})});
+  if(r.status===409||r.status===422)throw {code:'conflict'};
+  if(r.status===401||r.status===403||r.status===404)throw {code:'auth'};
+  if(!r.ok)throw {code:'net'};return (await r.json()).content.sha}
+function scheduleSync(ms){clearTimeout(SY.t);SY.t=setTimeout(function(){syncNow(false)},ms||1500)}
+async function syncNow(manual){
+  if(SY.busy){SY.again=true;return}
+  if(sheet){scheduleSync(4000);return}
+  if(!navigator.onLine){paintSync();if(manual)toast('Sei offline: le modifiche restano sul telefono');return}
+  SY.busy=true;paintSync();
+  try{
+    for(var tries=0;tries<4;tries++){
+      var rem=await fetchRemote(),m=toMap(rem.data);
+      if(SY.token&&rem.sha&&SY.ops.length){
+        var sent=SY.ops.map(function(o){return {o:o,a:clone(o.a)}});
+        applyOps(m,SY.ops);
+        try{await putRemote(fromMap(m),rem.sha)}catch(e){if(e.code==='conflict')continue;throw e}
+        SY.ops=SY.ops.filter(function(o){var s=sent.find(function(x){return x.o===o});if(!s)return true;if(ceq(o.a,s.a))return false;o.b=s.a;return true});
+        applyOps(m,SY.ops);
+      } else applyOps(m,SY.ops);
+      setLocal(m);SY.last=Date.now();SY.err='';
+      if(manual)toast(SY.ops.length?'Aggiornato. Modifiche ancora solo su questo telefono':'Tutto sincronizzato');
+      break}
+  }catch(e){SY.err=(e&&e.code)||'net';if(SY.err==='locked'){SY.err='';if(!SY.locked){SY.locked=true;render()}return}if(manual)toast(SY.err==='auth'?'La chiave non funziona: controllala':'Sincronizzazione non riuscita. Riprovo più tardi')}
+  finally{SY.busy=false;writeCache();paintSync();if(SY.again){SY.again=false;scheduleSync(500)}}}
+
+function syncState(){var n=SY.ops.length;
+  if(SY.locked)return ['err','Bloccata','Serve la password'];
+  if(SY.busy)return ['busy','Sync…','Sincronizzazione in corso'];
+  if(!navigator.onLine)return ['wait','Offline'+(n?' '+n:''),'Offline'+(n?': '+n+' modifiche in attesa':': stai usando la copia sul telefono')];
+  if(SY.err==='auth')return ['err','Chiave','La chiave di sincronizzazione non funziona'];
+  if(n&&!SY.token)return ['local','Locale '+n,n+' modifiche salvate solo su questo telefono'];
+  if(SY.err)return ['err','Errore','Ultima sincronizzazione non riuscita'];
+  if(n)return ['wait',n+' in attesa',n+' modifiche da inviare'];
+  return ['ok','Sync','Sincronizzato']}
+function paintSync(){var b=document.getElementById('syncBtn');if(!b)return;var s=syncState();
+  b.dataset.st=s[0];b.querySelector('.lbl').textContent=s[1];b.setAttribute('aria-label',s[2]+'. Apri le impostazioni di sincronizzazione')}
+function hhmm(t){if(!t)return 'mai';var d=new Date(t);return fDate(d.getFullYear()+'-'+two(d.getMonth()+1)+'-'+two(d.getDate()))+', '+two(d.getHours())+':'+two(d.getMinutes())}
+function openSync(){var s=syncState();
+  var intro='<div class="sync-info"><p><b>'+esc(s[2])+'.</b> Ultimo aggiornamento: '+esc(hhmm(SY.last))+'.</p>'+
+    '<p class="small">Tutto il viaggio resta sul telefono e si consulta anche senza rete. '+(SY.token?'Le modifiche partono da sole appena c\'è connessione.':'Senza chiave puoi consultare e modificare, ma le modifiche restano su questo telefono finché non inserisci la chiave.')+'</p>'+
+    '<div class="btns"><button type="button" class="btn" data-act="sync-now">'+ic('route',1)+'Sincronizza ora</button>'+
+    (SY.token?'<button type="button" class="btn sec2" data-act="copy-invite">'+ic('out',1)+'Copia link con chiave</button>':'')+'</div></div>';
+  openSheet({title:'Sincronizzazione',intro:intro,fields:[{k:'who',l:'Chi usa questo telefono',h:'Compare nella cronologia delle modifiche, per esempio Anna.'},{k:'key',l:'Chiave di sincronizzazione',t:'password',h:'Il token GitHub che ti ha dato Giacomo. Si inserisce una volta sola.'},{k:'newpw',l:'Nuova password del diario',t:'password',h:'Lascia vuoto per non cambiarla. Serve la chiave e la rete. Poi chi usa l\'altro telefono dovrà inserire la nuova password.'}],
+    values:{who:SY.who,key:SY.token,newpw:''},onSave:function(o){var npw=o.newpw;delete o.newpw;var changed=o.key!==SY.token;SY.who=o.who;SY.token=o.key;
+      try{localStorage.setItem(LS+'-who',o.who);localStorage.setItem(LS+'-key',o.key)}catch(e){}
+      if(npw){if(npw.length<8){toast('Password troppo corta: almeno 8 caratteri');return}
+        changePassword(npw).then(function(){toast('Password cambiata')},function(e){toast(e&&e.code==='offline'?'Serve la rete per cambiare password':e&&e.code==='auth'?'Serve una chiave valida':'Cambio password non riuscito')});return}
+      if(changed){SY.err='';syncNow(true)}paintSync()}})}
+function takeKeyFromHash(){var h=location.hash||'',inv=/^#invito=(.+)$/.exec(h),m=/^#chiave=(.+)$/.exec(h);if(!inv&&!m)return false;
+  if(inv){try{var o=JSON.parse(atob(decodeURIComponent(inv[1])));SY.token=String(o.t||'').trim();
+    if(o.k&&o.s){try{localStorage.setItem(LS+'-pw',JSON.stringify({k:o.k,s:o.s}))}catch(e){}loadKey().then(function(){SY.locked=false;syncNow(false)})}}catch(e){}}
+  else SY.token=decodeURIComponent(m[1]).trim();SY.err='';try{localStorage.setItem(LS+'-key',SY.token)}catch(e){}
+  try{history.replaceState(null,'',location.pathname+'#sunto')}catch(e){location.hash='sunto'}
+  setTimeout(function(){toast('Chiave salvata: le modifiche si sincronizzano');render();syncNow(false)},0);return true}
+async function copyInvite(){var u=location.origin+location.pathname+'#invito='+encodeURIComponent(btoa(JSON.stringify({t:SY.token,k:SY.rawKey,s:SY.salt})));
+  try{await navigator.clipboard.writeText(u);toast('Link copiato: contiene chiave e password, mandalo solo ad Anna')}catch(e){toast('Copia non riuscita')}}
+function day(id){return S.days.find(function(d){return d.id===id})}
+function dayNo(d){return S.days.indexOf(d)+1}
+function normDay(d){d.items=Array.isArray(d.items)?d.items:[];d.shops=Array.isArray(d.shops)?d.shops:[];d.tips=Array.isArray(d.tips)?d.tips:[];return d}
+function normTrip(t){['flights','stays','tips','reminders'].forEach(function(k){t[k]=Array.isArray(t[k])?t[k]:[]});return t}
+function sortedItems(d){return d.items.slice().sort(function(a,b){return (a.time||'99:99').localeCompare(b.time||'99:99')})}
+
+async function boot(){
+  readCache(); await loadKey(); takeKeyFromHash();
+  if(!SY.key){SY.locked=true;S.trip=null;S.days=[]}
+  if(S.trip){normTrip(S.trip);S.days.forEach(normDay);sortDays();S.ready=true}
+  snapAll(); render();
+  if(!S.trip){
+    try{var r=await fetch('data.json',{cache:'no-cache'});if(r.ok){var d=await r.json();
+      if(isEnc(d)){SY.blob=d;if(SY.key){try{setLocal(toMap(await openBlob(d)));SY.locked=false}catch(e){SY.locked=true}}else SY.locked=true}
+      else{SY.locked=false;setLocal(toMap(d))}}}catch(e){}
+    S.ready=true;render();
+  }
+  syncNow(false);
+  window.addEventListener('online',function(){paintSync();syncNow(false)});
+  window.addEventListener('offline',paintSync);
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&Date.now()-SY.last>60000)syncNow(false)});
+  setInterval(function(){if(document.visibilityState==='visible')syncNow(false)},300000);
+}
+
+/* ---------- link esterni ---------- */
+function mapsQ(o,city){return (o.maps&&!/^https?:/i.test(o.maps))?o.maps:[o.name,city,'Giappone'].filter(Boolean).join(' ')}
+function mapsUrl(o,city){var u=safeUrl(/^https?:/i.test(o.maps||'')?o.maps:'');if(u)return u;var ll=getLL(o);
+  return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(o.maps||(ll&&!o.name?ll.join(','):mapsQ(o,city)))}
+function place(o,city){var ll=getLL(o);if(o.maps&&!/^https?:/i.test(o.maps))return o.maps;return ll?ll.join(','):mapsQ(o,city)}
+function hotelPlace(d){if(!d.hotel&&!d.hotelMaps)return '';return place({name:d.hotel,maps:d.hotelMaps,coords:d.hotelCoords},d.city)}
+function dirUrl(d,o){var u='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(place(o,d.city))+'&travelmode=transit';
+  var h=hotelPlace(d);if(h)u+='&origin='+encodeURIComponent(h);return u}
+function routeUrl(d){var its=sortedItems(d);if(!its.length)return '';var h=hotelPlace(d),pts=its.map(function(o){return place(o,d.city)});
+  var origin=h||pts.shift();if(!pts.length)return '';var dest=pts.pop();
+  var u='https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(origin)+'&destination='+encodeURIComponent(dest);
+  if(pts.length)u+='&waypoints='+encodeURIComponent(pts.slice(0,9).join('|'));return u}
+function getLL(o){var m=/(-?\d{1,2}\.\d+)\s*[,;]\s*(-?\d{1,3}\.\d+)/.exec(o.coords||'');
+  if(!m&&o.maps){m=/@(-?\d{1,2}\.\d+),(-?\d{1,3}\.\d+)/.exec(o.maps)||/!3d(-?\d{1,2}\.\d+)!4d(-?\d{1,3}\.\d+)/.exec(o.maps)||/[?&]q(?:uery)?=(-?\d{1,2}\.\d+),(-?\d{1,3}\.\d+)/.exec(o.maps)}
+  if(!m)return null;var la=+m[1],lo=+m[2];return (Math.abs(la)<=90&&Math.abs(lo)<=180)?[la,lo]:null}
+function gcal(e){ if(!pDate(e.date))return '';var d=e.date.replace(/-/g,''),dates;
+  if(/^\d{2}:\d{2}$/.test(e.time||'')){var p=e.date.split('-'),t=e.time.split(':');
+    var end=new Date(Date.UTC(+p[0],+p[1]-1,+p[2],+t[0],+t[1])+(e.mins||60)*6e4);
+    dates=d+'T'+t[0]+t[1]+'00/'+end.getUTCFullYear()+two(end.getUTCMonth()+1)+two(end.getUTCDate())+'T'+two(end.getUTCHours())+two(end.getUTCMinutes())+'00';
+  } else { var n=pDate(e.date);n.setDate(n.getDate()+1);dates=d+'/'+n.getFullYear()+two(n.getMonth()+1)+two(n.getDate()) }
+  var u='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(e.title||'Promemoria')+'&dates='+dates;
+  if(e.details)u+='&details='+encodeURIComponent(e.details);if(e.location)u+='&location='+encodeURIComponent(e.location);
+  if(e.tz&&e.time)u+='&ctz='+encodeURIComponent(e.tz);return u}
+function ext(href,label,icon,cls){return href?'<a class="btn '+(cls||'sec2')+'" href="'+esc(href)+'" target="_blank" rel="noopener">'+ic(icon,1)+esc(label)+'</a>':''}
+
+/* ---------- navigazione ---------- */
+var TABS=[['sunto','Sunto'],['giorni','Giorni'],['mappa','Mappa'],['promemoria','Promemoria']];
+function route(){var h=(location.hash||'').slice(1)||'sunto';var m=/^giorno-(.+)$/.exec(h);if(m)return {v:'giorno',id:m[1],tab:'giorni'};
+  return TABS.some(function(t){return t[0]===h})?{v:h,tab:h}:{v:'sunto',tab:'sunto'}}
+function navHtml(tab,small){return TABS.map(function(t){return '<a href="#'+t[0]+'"'+(t[0]===tab?' aria-current="page"':'')+'>'+ic(t[0],small)+'<span>'+t[1]+'</span></a>'}).join('')}
+
+function head(title,act,label,extra){return '<div class="sec-head"><h2>'+esc(title)+'</h2>'+(act?'<button type="button" class="add only-edit" data-act="'+act+'"'+(extra||'')+'>'+ic('plus',1)+esc(label||'Aggiungi')+'</button>':'')+'</div>'}
+function editBtn(act,attrs,label){return '<button type="button" class="icon-btn only-edit" data-act="'+act+'" '+(attrs||'')+' aria-label="'+esc(label||'Modifica')+'">'+ic('edit')+'</button>'}
+function empty(txt){return '<p class="empty">'+esc(txt)+'</p>'}
+
+/* ---------- viste ---------- */
+function vEmptyTrip(){return '<section class="cover" data-c="viola"><div class="cover-in"><p class="kicker">Guida personale</p><h1 class="city">Giappone</h1>'+
+  '<p class="sub">Qui troverai giornate, orari, mezzi, negozi e mappe del viaggio. Per ora la guida è vuota.</p>'+
+  '<div class="btns"><button type="button" class="btn" data-act="new-trip">'+ic('plus',1)+'Crea il viaggio</button></div></div></section>'}
+
+function vSunto(){var t=S.trip, td=todayStr(), html='';
+  var n=(t.startDate&&t.endDate)?dayDiff(t.startDate,t.endDate)+1:null, to=t.startDate?dayDiff(td,t.startDate):null;
+  var todayDay=S.days.find(function(d){return d.date===td}), status='';
+  if(todayDay)status='<a class="btn" href="#giorno-'+esc(todayDay.id)+'">'+ic('right',1)+'Oggi: giorno '+two(dayNo(todayDay))+'</a>';
+  html+='<section class="cover" data-c="viola"><div class="cover-in"><div class="cover-row"><p class="kicker">'+esc(t.subtitle||'Il viaggio')+'</p>'+
+    '<button type="button" class="btn sec2 only-edit" data-act="edit-trip">'+ic('edit',1)+'Dati del viaggio</button></div>'+
+    '<h1 class="city">'+esc(t.title||'Giappone')+'</h1>'+
+    '<p class="data num">'+(t.startDate?esc(fDateY(t.startDate)):'Partenza da inserire')+' → '+(t.endDate?esc(fDateY(t.endDate)):'Ritorno da inserire')+'</p>'+
+    '<div class="cover-row" style="gap:8px 32px;align-items:flex-end">'+
+      (n>0?'<div class="stat"><b class="num">'+n+'</b><span class="kicker">Giorni</span></div>':'')+
+      '<div class="stat"><b class="num">'+S.days.length+'</b><span class="kicker">Giornate in guida</span></div>'+
+      (to!=null&&to>0?'<div class="stat"><b class="num">'+to+'</b><span class="kicker">Giorni alla partenza</span></div>':'')+
+      (t.travelers?'<div class="stat"><span class="data">'+esc(t.travelers)+'</span><span class="kicker">In viaggio</span></div>':'')+
+    '</div>'+(status?'<div class="btns">'+status+'</div>':'')+'</div></section>';
+  if(t.example)html+='<p class="banner">'+ic('info',1)+'<span>Dati di esempio, tutti da sostituire. Tocca MODIFICA in alto per inserire i tuoi.</span></p>';
+  /* sinistra */
+  var L='<section class="sec">'+head('In breve')+(t.summary?'<p class="lead">'+esc(t.summary)+'</p>':empty('Scrivi due righe sul viaggio: tocca MODIFICA, poi DATI DEL VIAGGIO.'))+'</section>';
+  L+='<section class="sec">'+head('Itinerario','new-day','Giorno')+(S.days.length?'<div class="list">'+S.days.map(function(d){
+     return '<a class="day-link'+(d.date===td?' today':'')+'" href="#giorno-'+esc(d.id)+'"><span class="idb num">'+dayNo(d)+'</span><span class="t"><span class="label num">'+esc(fDate(d.date)||'Data da inserire')+(d.city?' · '+esc(d.city):'')+'</span><strong>'+esc(d.title||'Giornata senza titolo')+'</strong></span>'+ic('right')+'</a>'}).join('')+'</div>':empty('Nessun giorno ancora. Aggiungi il primo con MODIFICA.'))+'</section>';
+  /* destra */
+  var R='<section class="sec">'+head('Voli e treni lunghi','new-flight')+(t.flights.length?'<div class="list">'+t.flights.map(function(f){
+     return '<div class="row">'+ic('plane')+'<div class="row-main"><span class="label">'+esc(f.label||'Volo')+(f.code?' · '+esc(f.code):'')+'</span><h3>'+esc(f.from||'?')+' → '+esc(f.to||'?')+'</h3>'+
+     '<span class="data num">'+esc(fDate(f.date))+(f.time?' · '+esc(f.time):'')+(f.arrive?' → '+esc(f.arrive):'')+'</span>'+(f.note?'<span class="small">'+esc(f.note)+'</span>':'')+
+     '<div class="btns" style="margin-top:4px">'+ext(gcal({title:(f.label||'Volo')+' '+(f.from||'')+' → '+(f.to||''),date:f.date,time:f.time,mins:120,details:[f.code,f.note].filter(Boolean).join(' · '),tz:f.tz}),'Calendario','cal')+'</div></div>'+editBtn('edit-flight','data-id="'+esc(f.id)+'"')+'</div>'}).join('')+'</div>':empty('Date e orari di andata e ritorno vanno qui.'))+'</section>';
+  R+='<section class="sec">'+head('Alloggi','new-stay')+(t.stays.length?'<div class="list">'+t.stays.map(function(s){
+     return '<div class="row">'+ic('bed')+'<div class="row-main"><span class="label">'+esc(s.city||'Città')+'</span><h3>'+esc(s.name||'Alloggio')+'</h3>'+
+     '<span class="data num">'+esc(fDate(s.checkIn,1)||'?')+' → '+esc(fDate(s.checkOut,1)||'?')+'</span>'+(s.address?'<span class="small">'+esc(s.address)+'</span>':'')+(s.note?'<span class="small">'+esc(s.note)+'</span>':'')+
+     '<div class="btns" style="margin-top:4px">'+ext(mapsUrl({name:s.name,maps:s.address},s.city),'Google Maps','out')+ext(safeUrl(s.url),'Sito','out')+'</div></div>'+editBtn('edit-stay','data-id="'+esc(s.id)+'"')+'</div>'}).join('')+'</div>':empty('Hotel e indirizzi, città per città.'))+'</section>';
+  R+='<section class="sec">'+head('Tips generali','new-tip')+tipsHtml(t.tips,'')+'</section>';
+  R+='<section class="sec">'+head('Note')+padHtml('trip',t.notes)+'</section>';
+  return html+'<div class="spread"><div class="col">'+L+'</div><div class="col">'+R+'</div></div>'}
+
+function tipsHtml(tips,dayId){return tips.length?'<div class="col" style="gap:12px">'+tips.map(function(x){return '<div class="tiprow"><p class="callout"><span><b>TIP:</b> '+esc(x.text)+'</span></p>'+editBtn('edit-tip','data-id="'+esc(x.id)+'" data-day="'+esc(dayId)+'"')+'</div>'}).join('')+'</div>':empty('Nessun consiglio ancora.')}
+function padHtml(key,val){return '<div class="pad"><label class="label" for="pad-'+esc(key)+'" style="padding:12px 16px 0">Scrivi qui</label><textarea id="pad-'+esc(key)+'" data-live="'+esc(key)+'" placeholder="Appunti, cose da ricordare, cosa ti è piaciuto :)">'+esc(val||'')+'</textarea><span class="saved" id="saved-'+esc(key)+'"></span></div>'}
+
+function vGiorni(){var td=todayStr();
+  return '<section class="sec" style="padding-top:24px"><div class="cover-row" style="justify-content:space-between"><h1 class="display">Giorno per giorno</h1>'+
+   '<button type="button" class="btn only-edit" data-act="new-day">'+ic('plus',1)+'Nuovo giorno</button></div>'+
+   (S.days.length?'<div class="cards">'+S.days.map(function(d){var done=d.items.filter(function(i){return i.done}).length;
+     return '<a class="icard" href="#giorno-'+esc(d.id)+'"><span class="icard-head num"><span>Giorno '+two(dayNo(d))+(d.date===td?' · oggi':'')+'</span><span>'+esc(fDate(d.date))+'</span></span>'+
+     '<span class="icard-body"><span class="cname">'+esc(d.city||'Città')+'</span><strong style="text-transform:uppercase;overflow-wrap:anywhere">'+esc(d.title||'Giornata senza titolo')+'</strong>'+
+     '<span class="small num">'+d.items.length+' tappe'+(done?' · '+done+' fatte':'')+' · '+d.shops.length+' negozi</span></span></a>'}).join('')+'</div>'
+     :empty('Nessun giorno ancora. Tocca MODIFICA in alto, poi NUOVO GIORNO.'))+'</section>'}
+
+function vGiorno(id){var d=day(id);if(!d)return '<section class="sec" style="padding-top:24px"><h1 class="display">Giorno non trovato</h1><div class="btns"><a class="btn" href="#giorni">Torna ai giorni</a></div></section>';
+  var i=S.days.indexOf(d),prev=S.days[i-1],next=S.days[i+1],its=sortedItems(d),first=its.find(function(x){return x.leave});
+  var html='<section class="cover" data-c="'+esc(d.color||'viola')+'"><div class="cover-in"><div class="cover-row"><p class="kicker num">Giorno '+two(i+1)+' · '+esc(fDateY(d.date)||'Data da inserire')+'</p>'+
+    '<button type="button" class="btn sec2 only-edit" data-act="edit-day" data-day="'+esc(d.id)+'">'+ic('edit',1)+'Dati del giorno</button></div>'+
+    '<h1 class="city">'+esc(d.city||'Città')+'</h1><p class="sub">'+esc(d.title||'Giornata senza titolo')+'</p></div></section>';
+  var L='';
+  if(d.summary)L+='<p class="lead">'+esc(d.summary)+'</p>';
+  L+='<div class="hotel"><span class="label">Si parte da</span><div class="meta">'+ic('bed',1)+'<span style="text-transform:uppercase;font-weight:700">'+esc(d.hotel||'Hotel da inserire')+'</span></div>'+
+    (first?'<span class="leave num">'+ic('clock',1)+'Esci alle '+esc(first.leave)+' per '+esc(first.name)+'</span>':'')+
+    '<div class="btns">'+(d.hotel||d.hotelMaps?ext(mapsUrl({name:d.hotel,maps:d.hotelMaps,coords:d.hotelCoords},d.city),'Hotel su Maps','out'):'')+ext(routeUrl(d),'Percorso del giorno','route','')+'</div></div>';
+  L+='<section class="sec">'+head('Scaletta','new-item','Tappa',' data-day="'+esc(d.id)+'"')+(its.length?'<div class="list">'+its.map(function(o,k){
+    var t=safeUrl(o.ticketUrl);
+    return '<article class="stop"><div class="stop-time num">'+esc(o.time||'--:--')+'<br><span class="idb num" style="margin-top:6px">'+(k+1)+'</span></div><div class="stop-main">'+
+     '<div class="stop-top"><h3>'+esc(o.name)+'</h3>'+editBtn('edit-item','data-day="'+esc(d.id)+'" data-id="'+esc(o.id)+'"')+
+     '<button type="button" class="chk" data-act="toggle-item" data-day="'+esc(d.id)+'" data-id="'+esc(o.id)+'" aria-pressed="'+(o.done?'true':'false')+'" aria-label="Segna '+esc(o.name)+' come visto"><span>'+ic('check',1)+'</span></button></div>'+
+     '<div class="cover-row" style="gap:8px">'+(o.kind?'<span class="tag'+(o.kind==='Spostamento'?' teal':'')+'">'+esc(o.kind)+'</span>':'')+stars(o.stars)+(o.hours?'<span class="data num">'+esc(o.hours)+'</span>':'')+'</div>'+
+     (o.leave?'<span class="leave num">'+ic('clock',1)+'Parti dall\'hotel alle '+esc(o.leave)+'</span>':'')+
+     (o.transport?'<div class="meta">'+ic('train',1)+'<span>'+esc(o.transport)+'</span></div>':'')+
+     (o.note?'<p class="body">'+esc(o.note)+'</p>':'')+
+     '<div class="btns">'+ext(mapsUrl(o,d.city),'Maps','out')+ext(dirUrl(d,o),'Come arrivo','route')+ext(t,'Biglietti','ticket','')+
+       ext(gcal({title:o.name,date:d.date,time:o.time,details:[o.transport,o.note].filter(Boolean).join('\n'),location:mapsQ(o,d.city),tz:o.tz||'Asia/Tokyo'}),'Calendario','cal')+'</div>'+
+     '</div></article>'}).join('')+'</div>':empty('Nessuna tappa. Aggiungi cosa vedere, a che ora e con quale mezzo.'))+'</section>';
+  var R='<section class="sec">'+head('Mappa del giorno')+mapHtml(pointsOf([d]),'d')+'<div class="btns"><a class="btn sec2" href="#mappa" data-act="open-map" data-day="'+esc(d.id)+'">'+ic('mappa',1)+'Apri la mappa grande</a></div></section>';
+  R+='<section class="sec">'+head('Negozi in zona','new-shop','Negozio',' data-day="'+esc(d.id)+'"')+(d.shops.length?'<div class="list">'+d.shops.map(function(s){
+    return '<div class="row"><div class="row-main"><div class="cover-row" style="gap:8px"><h3>'+esc(s.name)+'</h3>'+stars(s.stars)+'</div>'+(s.cat?'<span class="label">'+esc(s.cat)+'</span>':'')+
+     (s.hours?'<span class="data num">'+esc(s.hours)+'</span>':'')+(s.note?'<span class="small">'+esc(s.note)+'</span>':'')+
+     '<div class="btns" style="margin-top:4px">'+ext(mapsUrl(s,d.city),'Maps','out')+'</div></div>'+editBtn('edit-shop','data-day="'+esc(d.id)+'" data-id="'+esc(s.id)+'"')+'</div>'}).join('')+'</div>':empty('Negozi interessanti vicino alle tappe di oggi.'))+'</section>';
+  R+='<section class="sec">'+head('Tips del giorno','new-tip','Tip',' data-day="'+esc(d.id)+'"')+tipsHtml(d.tips,d.id)+'</section>';
+  R+='<section class="sec">'+head('Note del giorno')+padHtml('day:'+d.id,d.notes)+'</section>';
+  var pager='<nav class="pager" aria-label="Altri giorni">'+(prev?'<a class="btn sec2" href="#giorno-'+esc(prev.id)+'">'+ic('left',1)+'Giorno '+two(i)+'</a>':'<span></span>')+
+    (next?'<a class="btn sec2" href="#giorno-'+esc(next.id)+'">Giorno '+two(i+2)+ic('right',1)+'</a>':'<span></span>')+'</nav>';
+  return html+'<div class="spread"><div class="col">'+L+'</div><div class="col">'+R+'</div></div>'+pager}
+
+/* punti per la mappa */
+function pointsOf(days){var pts=[];days.forEach(function(d){var n=dayNo(d);
+  if(d.hotel||d.hotelCoords)pts.push({k:d.id+':h',t:'hotel',name:d.hotel||'Hotel',sub:'Hotel · giorno '+two(n),ll:getLL({coords:d.hotelCoords,maps:d.hotelMaps}),o:{name:d.hotel,maps:d.hotelMaps,coords:d.hotelCoords},d:d,label:'H'});
+  sortedItems(d).forEach(function(o,k){pts.push({k:d.id+':'+o.id,t:'item',name:o.name,sub:(o.time?o.time+' · ':'')+'giorno '+two(n),ll:getLL(o),o:o,d:d,label:String(k+1)})});
+  d.shops.forEach(function(s){pts.push({k:d.id+':'+s.id,t:'shop',name:s.name,sub:(s.cat||'Negozio')+' · giorno '+two(n),ll:getLL(s),o:s,d:d,label:'N'})})});
+  var seen={};return pts.filter(function(p){if(p.t!=='hotel')return true;var key=p.name+'|'+(p.ll||'');if(seen[key])return false;seen[key]=1;return true})}
+var JP=null;
+function inJapan(p){return p.ll[0]>24&&p.ll[0]<46&&p.ll[1]>122&&p.ll[1]<146}
+function loadCoast(){fetch('japan.json').then(function(r){return r.ok?r.json():null}).then(function(j){if(!j||!Array.isArray(j.rings))return;
+  JP=j.rings.map(function(r){var a=90,b=-90,c=180,d=-180;r.forEach(function(q){if(q[0]<a)a=q[0];if(q[0]>b)b=q[0];if(q[1]<c)c=q[1];if(q[1]>d)d=q[1]});return {r:r,a:a,b:b,c:c,d:d}});render()}).catch(function(){})}
+function mapHtml(pts,ctx){var g=pts.filter(function(p){return p.ll});
+  var jp=g.filter(inJapan);if(jp.length>=2&&jp.length<g.length)g=jp;
+  if(!g.length)return '<div class="map"><p class="map-empty">Nessun punto con coordinate.<br>Aggiungile a una tappa (in MODIFICA) e comparirà qui.</p></div>';
+  var W=640,H=ctx==='d'?400:460,P=44,cos=Math.cos(g.reduce(function(a,p){return a+p.ll[0]},0)/g.length*Math.PI/180);
+  var xs=g.map(function(p){return p.ll[1]*cos}),ys=g.map(function(p){return p.ll[0]});
+  var x0=Math.min.apply(0,xs),x1=Math.max.apply(0,xs),y0=Math.min.apply(0,ys),y1=Math.max.apply(0,ys);
+  var sc=Math.min((W-2*P-70)/Math.max(x1-x0,1e-4),(H-2*P)/Math.max(y1-y0,1e-4),(H-2*P)/0.16);
+  var ox=(W-70-(x1-x0)*sc)/2, oy=(H-(y1-y0)*sc)/2;
+  function X(p){return +(ox+(p.ll[1]*cos-x0)*sc).toFixed(1)} function Y(p){return +(oy+(y1-p.ll[0])*sc).toFixed(1)}
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="group" aria-label="Mappa schematica dei punti di interesse"><defs><pattern id="dots-'+ctx+'" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="8" cy="8" r="1.2" fill="#B9B3A6"/></pattern></defs>'+
+    '';
+  var land='';
+  if(JP){var la0=y1-(H-oy)/sc,la1=y1+oy/sc,lo0=(x0-ox/sc)/cos,lo1=(x0+(W-ox)/sc)/cos;
+    JP.forEach(function(q){if(q.b<la0||q.a>la1||q.d<lo0||q.c>lo1)return;
+      land+='M'+q.r.map(function(v){return (ox+(v[1]*cos-x0)*sc).toFixed(1)+' '+(oy+(y1-v[0])*sc).toFixed(1)}).join('L')+'Z'})}
+  if(land)s+='<rect width="'+W+'" height="'+H+'" fill="#A9D6EE"/><path d="'+land+'" fill="#DAD6CE" stroke="#7FA3B8" stroke-width="1" stroke-linejoin="round"/>';
+  else s+='<rect width="'+W+'" height="'+H+'" fill="#DAD6CE"/><rect width="'+W+'" height="'+H+'" fill="url(#dots-'+ctx+')"/>';
+  var byDay={};g.forEach(function(p){if(p.t!=='shop')(byDay[p.d.id]=byDay[p.d.id]||[]).push(p)});
+  Object.keys(byDay).forEach(function(id){var a=byDay[id];if(a.length<2)return;var pl=a.map(function(p){return X(p)+','+Y(p)}).join(' ');
+    s+='<polyline points="'+pl+'" fill="none" stroke="#202023" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/><polyline points="'+pl+'" fill="none" stroke="#F6D52B" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>'});
+  g.forEach(function(p){var x=X(p),y=Y(p),sel=mapSel===p.k,fill=p.t==='hotel'?'#202023':(p.t==='shop'?'#2B6F69':'#FFFFFF'),ring=p.t==='item'?'#C8155A':'#202023',tc=p.t==='item'?'#202023':'#FFFFFF';
+    s+='<g class="pin" tabindex="0" role="button" data-act="pin" data-k="'+esc(p.k)+'" aria-label="'+esc(p.name+', '+p.sub)+'"><circle cx="'+x+'" cy="'+y+'" r="22" fill="transparent"/>'+
+      (sel?'<circle cx="'+x+'" cy="'+y+'" r="19" fill="#F6D52B" stroke="#202023" stroke-width="2"/>':'')+
+      '<circle class="ring" cx="'+x+'" cy="'+y+'" r="12" fill="'+fill+'" stroke="'+ring+'" stroke-width="4"/>'+
+      '<text x="'+x+'" y="'+(y+4.5)+'" text-anchor="middle" style="stroke:none;fill:'+tc+';font-size:12px">'+esc(p.label)+'</text>'+
+      (g.length<=14||sel?'<text x="'+(x>W-190?x-18:x+18)+'" y="'+(y+5)+'"'+(x>W-190?' text-anchor="end"':'')+'>'+esc(p.name.length>18?p.name.slice(0,17)+'…':p.name)+'</text>':'')+'</g>'});
+  return '<div class="map">'+s+'</svg></div>'}
+
+function vMappa(){var d=mapDay==='all'?null:day(mapDay);if(mapDay!=='all'&&!d){mapDay='all'}
+  var pts=pointsOf(d?[d]:S.days),sel=pts.find(function(p){return p.k===mapSel});
+  var html='<section class="sec" style="padding-top:24px"><h1 class="display">Mappa dei punti</h1>'+
+   '<div class="chips" role="group" aria-label="Scegli il giorno"><button type="button" class="chip" data-act="map-day" data-day="all" aria-pressed="'+(d?'false':'true')+'">Tutti</button>'+
+   S.days.map(function(x){return '<button type="button" class="chip num" data-act="map-day" data-day="'+esc(x.id)+'" aria-pressed="'+(d&&d.id===x.id?'true':'false')+'">G'+two(dayNo(x))+' '+esc(x.city||'')+'</button>'}).join('')+'</div></section>';
+  var L='<section class="sec">'+mapHtml(pts,'m')+'<p class="legend"><span><i style="background:#fff;border:3px solid #C8155A"></i>Tappa</span><span><i style="background:#2B6F69"></i>Negozio</span><span><i style="background:#202023;border:1px solid var(--rule)"></i>Hotel</span><span><i style="background:#F6D52B;border-radius:0;height:5px;vertical-align:3px;border:1px solid #202023"></i>Ordine della giornata</span><span><i style="background:#A9D6EE;border-radius:0"></i>Mare</span></p>'+
+   '<p class="small">Mappa generale: costa del Giappone, posizione dei punti e ordine della giornata. Non mostra le strade: per quelle tocca un punto e aprilo in Google Maps.</p>'+
+   (d&&routeUrl(d)?'<div class="btns">'+ext(routeUrl(d),'Percorso del giorno in Google Maps','route','')+'</div>':'')+'</section>';
+  var R='';
+  if(sel)R+='<div class="sel" id="selCard"><span class="label num">'+esc(sel.sub)+'</span><h3 style="font:700 20px/26px var(--f-mono);text-transform:uppercase;overflow-wrap:anywhere">'+esc(sel.name)+'</h3>'+
+    (sel.o.note?'<p class="small">'+esc(sel.o.note)+'</p>':'')+'<div class="btns">'+ext(mapsUrl(sel.o,sel.d.city),'Apri in Google Maps','out','')+(sel.t!=='hotel'?ext(dirUrl(sel.d,sel.o),'Come arrivo','route'):'')+
+    '<a class="btn sec2" href="#giorno-'+esc(sel.d.id)+'">Vai al giorno</a></div></div>';
+  R+='<section class="sec">'+head('Punti di interesse')+(pts.length?'<div class="list">'+pts.map(function(p){
+    return '<div class="row'+(p.k===mapSel?' is-sel':'')+'"><button type="button" class="plain" data-act="pin" data-k="'+esc(p.k)+'"><span class="idb" style="'+(p.t==='shop'?'background:#2B6F69;color:#fff':'')+'">'+esc(p.label)+'</span>'+
+     '<span class="row-main"><strong style="text-transform:uppercase;overflow-wrap:anywhere">'+esc(p.name)+'</strong><span class="label num">'+esc(p.sub)+(p.ll?'':' · senza coordinate')+'</span></span></button>'+
+     '<a class="icon-btn" href="'+esc(mapsUrl(p.o,p.d.city))+'" target="_blank" rel="noopener" aria-label="Apri '+esc(p.name)+' in Google Maps" style="color:inherit">'+ic('out')+'</a></div>'}).join('')+'</div>':empty('Nessun punto. Aggiungi tappe e negozi nelle pagine dei giorni.'))+'</section>';
+  return html+'<div class="spread"><div class="col">'+L+'</div><div class="col">'+R+'</div></div>'}
+
+function vPromemoria(){var t=S.trip,rs=t.reminders.slice().sort(function(a,b){return (a.done?1:0)-(b.done?1:0)||((a.date||'9999')+(a.time||'')).localeCompare((b.date||'9999')+(b.time||''))});
+  var td=todayStr();
+  return '<section class="sec" style="padding-top:24px"><div class="cover-row" style="justify-content:space-between"><h1 class="display">Promemoria</h1>'+
+   '<button type="button" class="btn" data-act="new-rem">'+ic('plus',1)+'Nuovo promemoria</button></div>'+
+   '<p class="small" style="max-width:62ch">Cose da prenotare o ricordare. CALENDARIO apre Google Calendar con data e ora già compilate: da lì lo salvi sul tuo telefono.</p>'+
+   (rs.length?'<div class="list">'+rs.map(function(r){var late=!r.done&&r.date&&r.date<td;
+    return '<div class="row"><button type="button" class="chk" style="margin:0" data-act="toggle-rem" data-id="'+esc(r.id)+'" aria-pressed="'+(r.done?'true':'false')+'" aria-label="Segna '+esc(r.title)+' come fatto"><span>'+ic('check',1)+'</span></button>'+
+     '<div class="row-main"><span class="label num">'+esc(fDateY(r.date)||'Senza data')+(r.time?' · '+esc(r.time)+(r.tz==='Asia/Tokyo'?' ora del Giappone':' ora italiana'):'')+(late?' · scaduto':'')+(r.done?' · fatto':'')+'</span>'+
+     '<h3>'+esc(r.title)+'</h3>'+(r.note?'<span class="small">'+esc(r.note)+'</span>':'')+
+     '<div class="btns" style="margin-top:4px">'+ext(gcal({title:r.title,date:r.date,time:r.time,details:r.note,tz:r.tz||'Europe/Rome'}),'Calendario','cal')+ext(safeUrl(r.url),'Apri il link','out')+'</div></div>'+
+     '<button type="button" class="icon-btn" data-act="edit-rem" data-id="'+esc(r.id)+'" aria-label="Modifica '+esc(r.title)+'">'+ic('edit')+'</button></div>'}).join('')+'</div>'
+    :empty('Nessun promemoria. Esempi: prenotare un museo, comprare il pass dei treni, fare il check-in online.'))+'</section>'}
+
+/* ---------- schermata password ---------- */
+function vLock(){return '<section class="cover" data-c="carbone"><div class="cover-in"><p class="kicker">Diario privato</p><h1 class="city">Giappone</h1></div></section>'+
+  '<section class="col" style="max-width:520px"><form id="lockForm" class="col" style="gap:16px" novalidate>'+
+  '<p>I dati del viaggio sono protetti. Inserisci la password che ti ha dato Giacomo: serve una volta sola su questo telefono.</p>'+
+  '<div class="fld"><label for="lockPw">Password del diario</label><input id="lockPw" type="password" autocomplete="current-password" autocapitalize="off">'+
+  '<small class="err" id="lockErr" role="alert" hidden></small></div>'+
+  '<div class="btns"><button type="submit" class="btn">'+ic('check',1)+'Apri il diario</button></div>'+
+  '<p class="small">Se Giacomo ti ha mandato un link di invito, aprilo da questo telefono: la password si inserisce da sola.</p></form></section>'}
+document.addEventListener('submit',function(e){if(e.target.id!=='lockForm')return;e.preventDefault();
+  var pw=$('#lockPw').value,er=$('#lockErr');er.hidden=true;if(!pw){er.textContent='Scrivi la password.';er.hidden=false;return}
+  var btn=e.target.querySelector('button');btn.disabled=true;
+  (SY.blob?Promise.resolve():fetch('data.json',{cache:'no-cache'}).then(function(r){return r.json()}).then(function(d){if(isEnc(d))SY.blob=d}))
+  .then(function(){return unlock(pw)}).then(function(){toast('Diario aperto')},function(x){btn.disabled=false;
+    er.textContent=x&&x.code==='badpw'?'Password sbagliata. Riprova.':'Non riesco a leggere i dati: serve la rete la prima volta.';er.hidden=false})});
+
+/* ---------- render ---------- */
+function render(){
+  var a=document.activeElement; if(a&&a.dataset&&a.dataset.live){pendingRender=true;return} pendingRender=false;
+  var r=route(), app=$('#app'), html;
+  document.body.classList.toggle('editing',editing);
+  var eb=$('#editBtn'); eb.setAttribute('aria-pressed',editing?'true':'false'); eb.innerHTML=ic(editing?'check':'edit',1)+'<span>'+(editing?'Fine':'Modifica')+'</span>'; eb.hidden=!S.trip||SY.locked;
+  paintSync();
+  $('#topnav').innerHTML=navHtml(r.tab,1); $('#botnav').innerHTML=navHtml(r.tab);
+  $('#brand').textContent=S.trip&&S.trip.title?'Diario '+S.trip.title:'Diario Giappone';
+  if(SY.locked)html=vLock();
+  else if(!S.ready)html='<p class="loading">Apro la guida…</p>';
+  else if(!S.trip)html=vEmptyTrip();
+  else if(r.v==='giorni')html=vGiorni(); else if(r.v==='giorno')html=vGiorno(r.id); else if(r.v==='mappa')html=vMappa(); else if(r.v==='promemoria')html=vPromemoria(); else html=vSunto();
+  var y=window.scrollY; app.innerHTML=html; window.scrollTo(0,y);
+}
+window.addEventListener('hashchange',function(){if(takeKeyFromHash())return;mapSel=null;render();window.scrollTo(0,0);$('#app').focus({preventScroll:true})});
+
+function toast(msg){var h=$('#toastHost');h.innerHTML='<div class="toast">'+esc(msg)+'</div>';clearTimeout(toast.t);toast.t=setTimeout(function(){h.innerHTML=''},3200)}
+
+/* ---------- note con salvataggio automatico ---------- */
+var noteTimer=null;
+function saveNote(el){var k=el.dataset.live,v=el.value;
+  if(k==='trip'){if(S.trip.notes===v)return;S.trip.notes=v;saveTrip(true)}
+  else{var d=day(k.slice(4));if(!d||d.notes===v)return;d.notes=v;saveDay(d,true)}
+  var s=document.getElementById('saved-'+k);if(s)s.textContent='Salvato'}
+document.addEventListener('input',function(e){var el=e.target;if(!el.dataset||!el.dataset.live)return;var s=document.getElementById('saved-'+el.dataset.live);if(s)s.textContent='';
+  clearTimeout(noteTimer);noteTimer=setTimeout(function(){saveNote(el)},900)});
+document.addEventListener('focusout',function(e){var el=e.target;if(!el.dataset||!el.dataset.live)return;clearTimeout(noteTimer);saveNote(el);
+  setTimeout(function(){if(pendingRender)render()},0)});
+
+/* ---------- scheda di modifica ---------- */
+var sheet=null;
+function openSheet(cfg){sheet=cfg;var v=cfg.values||{},host=$('#sheetHost');
+  function fld(f){var id='f-'+f.k,val=v[f.k]==null?(f.def||''):v[f.k],c;
+    if(f.t==='area')c='<textarea id="'+id+'" name="'+f.k+'">'+esc(val)+'</textarea>';
+    else if(f.t==='select')c='<select id="'+id+'" name="'+f.k+'">'+f.opts.map(function(o){var ov=Array.isArray(o)?o[0]:o,ol=Array.isArray(o)?o[1]:o;return '<option value="'+esc(ov)+'"'+(String(ov)===String(val)?' selected':'')+'>'+esc(ol)+'</option>'}).join('')+'</select>';
+    else c='<input id="'+id+'" name="'+f.k+'" type="'+(f.t||'text')+'" value="'+esc(val)+'"'+(f.t==='url'?' inputmode="url" autocapitalize="off"':'')+' autocomplete="off">';
+    return '<div class="fld"><label for="'+id+'">'+esc(f.l)+(f.req?' *':'')+'</label>'+c+(f.h?'<small>'+esc(f.h)+'</small>':'')+'<small class="err" id="e-'+f.k+'" role="alert" hidden></small></div>'}
+  var body='',i=0,fs=cfg.fields;
+  while(i<fs.length){if(fs[i].half&&fs[i+1]&&fs[i+1].half){body+='<div class="two">'+fld(fs[i])+fld(fs[i+1])+'</div>';i+=2}else{body+=fld(fs[i]);i++}}
+  host.innerHTML='<div class="scrim" data-act="sheet-scrim"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"><div class="sheet-head"><h2 id="sheetTitle">'+esc(cfg.title)+'</h2>'+
+    '<button type="button" class="icon-btn" data-act="sheet-close" aria-label="Chiudi">'+ic('x')+'</button></div><form id="sheetForm" novalidate>'+(cfg.intro||'')+body+
+    '<div class="sheet-foot">'+(cfg.onDelete?'<button type="button" class="btn danger" data-act="sheet-del">Elimina</button>':'<span></span>')+'<button type="submit" class="btn">'+ic('check',1)+'Salva</button></div></form></div></div>';
+  var first=host.querySelector('input,textarea,select');if(first)first.focus()}
+function closeSheet(){sheet=null;$('#sheetHost').innerHTML='';if(SY.deferred){SY.deferred=null;scheduleSync(300)}}
+document.addEventListener('submit',function(e){if(e.target.id!=='sheetForm')return;e.preventDefault();var out={},bad=null;
+  sheet.fields.forEach(function(f){var el=e.target.elements[f.k],val=el.value.trim(),er=document.getElementById('e-'+f.k);er.hidden=true;
+    if(f.req&&!val){er.textContent='Questo campo serve: scrivi almeno un nome.';er.hidden=false;bad=bad||el}
+    if(f.t==='url'&&val&&!safeUrl(val)){er.textContent='Incolla un indirizzo web completo, per esempio https://…';er.hidden=false;bad=bad||el}
+    if(f.coords&&val&&!getLL({coords:val})){er.textContent='Scrivi latitudine e longitudine, per esempio 35.7148, 139.7967';er.hidden=false;bad=bad||el}
+    out[f.k]=f.t==='url'?safeUrl(val):(f.num?+val:val)});
+  if(bad){bad.focus();return} var fn=sheet.onSave;closeSheet();fn(out);toast('Salvato')});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&sheet)closeSheet();
+  if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('g.pin')){e.preventDefault();act(e.target.closest('g.pin'))}});
+
+var COORD_H='Facoltative, servono per la mappa. In Google Maps tieni premuto sul luogo e copia i due numeri.';
+var F={
+ trip:[{k:'title',l:'Nome del viaggio',req:1,h:'Compare in copertina, per esempio GIAPPONE.'},{k:'subtitle',l:'Sottotitolo',h:'Per esempio PRIMAVERA 2027.'},{k:'startDate',l:'Partenza',t:'date',half:1},{k:'endDate',l:'Ritorno',t:'date',half:1},{k:'travelers',l:'Chi viaggia'},{k:'summary',l:'Il viaggio in breve',t:'area'}],
+ flight:[{k:'label',l:'Tipo',t:'select',opts:['Andata','Ritorno','Volo interno','Shinkansen','Altro']},{k:'from',l:'Da',req:1,half:1},{k:'to',l:'A',half:1},{k:'date',l:'Data',t:'date'},{k:'time',l:'Partenza',t:'time',half:1},{k:'arrive',l:'Arrivo',t:'time',half:1},{k:'tz',l:'Fuso dell\'ora di partenza',t:'select',opts:[['Europe/Rome','Italia'],['Asia/Tokyo','Giappone'],['Asia/Shanghai','Cina']]},{k:'code',l:'Numero volo o treno'},{k:'note',l:'Note',t:'area',h:'Terminal, posto, bagagli.'}],
+ stay:[{k:'city',l:'Città',half:1},{k:'name',l:'Nome',req:1,half:1},{k:'address',l:'Indirizzo'},{k:'checkIn',l:'Check-in',t:'date',half:1},{k:'checkOut',l:'Check-out',t:'date',half:1},{k:'note',l:'Note',t:'area',h:'Camera, trattamento, orari.'},{k:'url',l:'Sito dell\'hotel',t:'url'}],
+ tip:[{k:'text',l:'Consiglio',t:'area',req:1}],
+ day:[{k:'date',l:'Data',t:'date',half:1},{k:'city',l:'Città',half:1},{k:'title',l:'Titolo della giornata',req:1},{k:'color',l:'Colore di copertina',t:'select',opts:[['viola','Viola'],['rosa','Rosa'],['teal','Teal'],['carbone','Carbone']]},{k:'summary',l:'La giornata in breve',t:'area'},{k:'hotel',l:'Hotel di partenza'},{k:'hotelMaps',l:'Indirizzo dell\'hotel',h:'Serve per calcolare i percorsi su Google Maps.'},{k:'hotelCoords',l:'Coordinate dell\'hotel',coords:1,h:COORD_H}],
+ item:[{k:'name',l:'Cosa',req:1},{k:'time',l:'Ora di arrivo',t:'time',half:1},{k:'leave',l:'Parti dall\'hotel alle',t:'time',half:1},{k:'kind',l:'Tipo',t:'select',opts:['Vedere','Mangiare','Shopping','Museo','Spostamento','Altro'],half:1},{k:'stars',l:'Priorità',t:'select',num:1,opts:[[0,'Nessuna'],[1,'✱'],[2,'✱✱'],[3,'✱✱✱']],half:1},{k:'hours',l:'Orari di apertura',h:'Per esempio 09:00 - 17:00.'},{k:'transport',l:'Mezzo consigliato',t:'area',h:'Linea, fermata, durata, costo.'},{k:'note',l:'Note',t:'area'},{k:'ticketUrl',l:'Link per i biglietti',t:'url'},{k:'maps',l:'Indirizzo o link Google Maps',h:'Se lo lasci vuoto cerco il nome nella città del giorno.'},{k:'coords',l:'Coordinate',coords:1,h:COORD_H}],
+ shop:[{k:'name',l:'Nome del negozio',req:1},{k:'cat',l:'Cosa vende',half:1},{k:'stars',l:'Voto',t:'select',num:1,opts:[[0,'Nessuno'],[1,'✱'],[2,'✱✱'],[3,'✱✱✱']],half:1},{k:'hours',l:'Orari'},{k:'note',l:'Note',t:'area'},{k:'maps',l:'Indirizzo o link Google Maps'},{k:'coords',l:'Coordinate',coords:1,h:COORD_H}],
+ rem:[{k:'title',l:'Cosa ricordare',req:1},{k:'date',l:'Data',t:'date',half:1},{k:'time',l:'Ora',t:'time',half:1},{k:'tz',l:'Fuso orario',t:'select',opts:[['Europe/Rome','Ora italiana'],['Asia/Tokyo','Ora del Giappone']]},{k:'note',l:'Note',t:'area'},{k:'url',l:'Link utile',t:'url'}]
+};
+/* modifica di un elemento in un elenco: nuovo se id assente */
+function listEdit(title,fields,arr,id,save,defs){var cur=id?arr.find(function(x){return x.id===id}):null;
+  openSheet({title:(cur?'Modifica ':'Nuovo: ')+title,fields:fields,values:cur||defs||{},
+    onSave:function(o){if(cur)Object.assign(cur,o);else{o.id=uid();arr.push(o)}save()},
+    onDelete:cur?function(){arr.splice(arr.indexOf(cur),1);save()}:null})}
+
+function act(el){var a=el.dataset.act,id=el.dataset.id,d=el.dataset.day?day(el.dataset.day):null,t=S.trip;
+  switch(a){
+   case 'new-trip': S.trip=normTrip({title:'Giappone',subtitle:'',startDate:'',endDate:'',travelers:'',summary:'',notes:''});editing=true;saveTrip();
+     openSheet({title:'Dati del viaggio',fields:F.trip,values:S.trip,onSave:function(o){Object.assign(S.trip,o);saveTrip()}});break;
+   case 'edit-trip': openSheet({title:'Dati del viaggio',fields:F.trip,values:t,onSave:function(o){Object.assign(t,o);delete t.example;saveTrip()}});break;
+   case 'new-flight': case 'edit-flight': listEdit('viaggio',F.flight,t.flights,id,saveTrip);break;
+   case 'new-stay': case 'edit-stay': listEdit('alloggio',F.stay,t.stays,id,saveTrip);break;
+   case 'new-tip': case 'edit-tip': if(d)listEdit('tip',F.tip,d.tips,id,function(){saveDay(d)});else listEdit('tip',F.tip,t.tips,id,saveTrip);break;
+   case 'new-rem': case 'edit-rem': listEdit('promemoria',F.rem,t.reminders,id,saveTrip,{tz:'Europe/Rome'});break;
+   case 'toggle-rem': var r=t.reminders.find(function(x){return x.id===id});if(r){r.done=!r.done;saveTrip()}break;
+   case 'new-day': var last=S.days[S.days.length-1],nd='';if(last&&pDate(last.date)){var x=pDate(last.date);x.setDate(x.getDate()+1);nd=x.getFullYear()+'-'+two(x.getMonth()+1)+'-'+two(x.getDate())}else if(t.startDate)nd=t.startDate;
+     openSheet({title:'Nuovo giorno',fields:F.day,values:{date:nd,city:last?last.city:'',color:last?last.color:'viola',hotel:last?last.hotel:'',hotelMaps:last?last.hotelMaps:'',hotelCoords:last?last.hotelCoords:''},
+       onSave:function(o){o.id='d'+uid();normDay(o);o.notes='';S.days.push(o);saveDay(o,true);location.hash='giorno-'+o.id}});break;
+   case 'edit-day': if(d)openSheet({title:'Dati del giorno',fields:F.day,values:d,onSave:function(o){Object.assign(d,o);saveDay(d)},onDelete:function(){removeDay(d.id);location.hash='giorni'}});break;
+   case 'new-item': case 'edit-item': if(d)listEdit('tappa',F.item,d.items,id,function(){saveDay(d)},{kind:'Vedere'});break;
+   case 'new-shop': case 'edit-shop': if(d)listEdit('negozio',F.shop,d.shops,id,function(){saveDay(d)});break;
+   case 'toggle-item': if(d){var it=d.items.find(function(x){return x.id===id});if(it){it.done=!it.done;saveDay(d)}}break;
+   case 'map-day': mapDay=el.dataset.day;mapSel=null;render();break;
+   case 'open-map': mapDay=el.dataset.day;mapSel=null;break;
+   case 'pin': mapSel=mapSel===el.dataset.k?null:el.dataset.k;
+     if(route().v!=='mappa'){mapDay=el.dataset.k.split(':')[0];location.hash='mappa';}else{render();var c=$('#selCard');if(c&&c.scrollIntoView)c.scrollIntoView({block:'nearest'})}break;
+   case 'sync-panel': openSync();break;
+   case 'copy-invite': copyInvite();break;
+   case 'sync-now': closeSheet();syncNow(true);break;
+   case 'sheet-close': closeSheet();break;
+   case 'sheet-del': if(el.dataset.sure){var fn=sheet.onDelete;closeSheet();fn();toast('Eliminato')}else{el.dataset.sure='1';el.textContent='Tocca ancora per eliminare'}break;
+  }}
+document.addEventListener('click',function(e){
+  if(e.target.id==='editBtn'||e.target.closest('#editBtn')){editing=!editing;try{localStorage.setItem(LS+'-edit',editing?'1':'0')}catch(x){}render();return}
+  var el=e.target.closest('[data-act]');if(!el)return;
+  if(el.dataset.act==='sheet-scrim'){if(e.target===el)closeSheet();return}
+  act(el)});
+
+boot();loadCoast();
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){navigator.serviceWorker.register('sw.js').catch(function(){})}
+})();
+</script>
+
+</body></html>
